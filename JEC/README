@@ -1,0 +1,49 @@
+####This is what I have been modified and used for JEC determination####
+1.   cmsrel CMSSWVERSION
+   cd CMSSWVERSION/src
+   cmsenv
+   cvs co      JetMETAnalysis/JetAnalyzers
+   cvs co      JetMETAnalysis/JetUtilities
+   cvs co      UserCode/YaxianMao/JEC
+
+2. replace the following code under JetMETAnalysis/JetAnalyzers/bin with Yaxian/JEC/bin/:
+jet_response_analyzer_x.cc
+jet_l3_correction_x.cc
+jet_l2_correction_x.cc
+jet_draw_corrections_x.cc
+
+3. run the script under Yaxian/JEC/scripts/MCpp276HITracking.sh to merge the pthat bin samples (change the path and name accordingly)
+./MCpp276HITrack.sh
+
+4. run the script under Yaxian/JEC/scripts/runJECpp276HITrack.sh to determine the JEC and generate the *.txt files
+./runJECpp276HITrack.sh
+
+5. run the script under Yaxian/JEC/script/corr_MCpp276HITracking.sh to test the JEC correction factors with *.txt on-the-fly
+./corr_MCpp276HITracking.sh
+
+6. run the macros under Yaxian/JEC/macros/JetResponseMacro_Pt.C and JetResponseMacro_Eta.C to check the JEC closure for both JES and JER and save plots
+root -l
+.L *.C
+.x *.C
+ 
+7. Once everything is checked, copy *.txt files to CondFormats/JetMETObjects/data/
+
+8. convert *.txt file into db, using CondFormats/JetMETObjects/JetCorrectionDBWriter_cfg.py by running (used the one under Yaxian/JEC/bin)
+cmsRun JetCorrectionDBWriter_cfg.py
+
+9. check the names of payloads in the db file is correct, by running
+cmscond_list_iov -c sqlite_file:JEC_PA5TEV_CMSSW538_2013.db -a
+
+Note: every time changed something in the package for l2 and l3 correction *.cc, need a recompile by running
+scramv1 b
+
+
+###### After a new production with JEC db file produced, one can run full closure following below:
+1. ./runPythiaHydjet.sh
+
+2 Using the output from 1 and make drawing using *.C under YaxianMAO/JEC/macros/closure
+
+root -l -b -q JetEnergyResolution.C gives the JES/JER distribution vs Gen jet pt
+root -l -b -q Pt_JetEnergyResolutionEta.C gives the JES/JER distribution vs Gen jet eta
+root -l -b -q HFbin_OneJetAlgoJER.C gives the JES/JER for different HF bin closure vs Gen jet pt for one jet algorithm   
+
