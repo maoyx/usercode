@@ -1,0 +1,18 @@
+## This folder is used for HI jet shape analysis during 2012 ##
+
+###To run the code, check out the hiForest package
+kinit -Af ymao@CERN.CH
+###define CVSROOT definitation
+export CVSROOT=:gserver:cmscvs.cern.ch:/cvs_server/repositories/CMSSW
+###if the above does not work, try this setting #############
+export CVSROOT=:gserver:cmscvs.cern.ch:/local/reps/CMSSW
+###if one did not work, try the other one around
+
+cvs co -r HiForest_YOURVERSION -d WORKDIR UserCode/CmsHi/HiForest/V*
+
+###To make sure the code running correctly, you can replace the hiForest.h and TrackingCorrection4Cent.h, TrackUtils.C with the one under YaxianMao/JetShape
+
+###Then run it with root commend, first compile it, check the script for condor job submission###
+./myScript.sh PTHATMIN PTHATMAX
+
+
